@@ -29,7 +29,14 @@ DEVELOPMENT=${DEVELOPMENT:-false}
 case "$(uname)" in
     Linux*|Darwin*)
         echo "Enabling X11 forwarding..."
-        export DISPLAY=host.docker.internal:0
+
+        # Credits user Giuseppe Coco for this change
+        # If running under WSL, use :0 for DISPLAY
+        if grep -q "WSL" /proc/version; then
+            export DISPLAY=:0
+        else
+            export DISPLAY=host.docker.internal:0
+        fi
         xhost +
         ;;
     MINGW*|CYGWIN*|MSYS*)
@@ -50,11 +57,13 @@ fi
 
 # Build and run the Docker container
 CONTAINER_NAME="rosa-turtlesim-demo"
+
+# comment out these two lines below if you just want to run
 echo "Building the $CONTAINER_NAME Docker image..."
 docker build --build-arg DEVELOPMENT=$DEVELOPMENT -t $CONTAINER_NAME -f Dockerfile . || { echo "Error: Docker build failed"; exit 1; }
 
 echo "Running the Docker container..."
-docker run -it --rm --name $CONTAINER_NAME \
+docker run -it --rm --device /dev/snd --name $CONTAINER_NAME \
     -e DISPLAY=$DISPLAY \
     -e HEADLESS=$HEADLESS \
     -e DEVELOPMENT=$DEVELOPMENT \

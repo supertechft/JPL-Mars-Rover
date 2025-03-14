@@ -10,10 +10,14 @@ RUN apt-get update && apt-get install -y \
     ros-$(rosversion -d)-turtlesim \
     locales \
     xvfb \
-    python3.9 \
-    python3-pip
+    python3.9-dev \
+    python3-pip \
+    alsa-base \
+    libasound2-dev \
+    alsa-utils \
+    portaudio19-dev 
 
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install -U python-dotenv catkin_tools
 RUN rosdep update && \
     echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc && \
@@ -26,8 +30,12 @@ WORKDIR /app/
 # Modify the RUN command to use ARG
 RUN /bin/bash -c 'if [ "$DEVELOPMENT" = "true" ]; then \
     python3.9 -m pip install --user -e .; \
+    python3.9 -m pip install -U huggingface_hub; \
+    python3.9 -m pip install -U pyaudio; \
     else \
     python3.9 -m pip install -U jpl-rosa>=1.0.7; \
+    python3.9 -m pip install -U huggingface_hub; \
+    python3.9 -m pip install -U pyaudio; \
     fi'
 
 CMD ["/bin/bash", "-c", "source /opt/ros/noetic/setup.bash && \

@@ -16,6 +16,7 @@
 import asyncio
 import os
 from datetime import datetime
+from pathlib import Path
 
 import dotenv
 import pyinputplus as pyip
@@ -32,8 +33,9 @@ from rosa import ROSA
 
 import tools.turtle as turtle_tools
 from help import get_help
-from llm import get_llm
+from llm import get_llm, get_inference
 from prompts import get_prompts
+from audio import recording
 
 
 # Typical method for defining tools in ROSA
@@ -49,6 +51,7 @@ class TurtleAgent(ROSA):
         self.__blacklist = ["master", "docker"]
         self.__prompts = get_prompts()
         self.__llm = get_llm(streaming=streaming)
+        self.__infernence = get_inference()
 
         # self.__llm = ChatOllama(
         #     base_url="host.docker.internal:11434",
@@ -91,8 +94,30 @@ class TurtleAgent(ROSA):
             "help": lambda: self.submit(get_help(self.examples)),
             "examples": lambda: self.submit(self.choose_example()),
             "clear": lambda: self.clear(),
+            "audio": lambda: self.submit(self.transcribe_audio()),
         }
 
+
+    def transcribe_audio(self) -> str:
+        """Record an audio file and transcribe it."""
+        console = Console()
+        root_dir = Path(__file__).parent.parent
+        audio_path = str(root_dir / 'data' / 'audio.wav')
+        
+        # Record Audio
+        console.print("Recording")
+        recording(audio_path)
+        console.print("Finished, now transcribing...")
+        
+        # Transcribe Audio using OpenAI Whisper
+        transcription = self.__infernence.automatic_speech_recognition(
+            audio=audio_path, model="openai/whisper-large-v3-turbo"
+        ).text
+        
+        console.print(transcription)
+        return transcription
+
+        
     def blast_off(self, input: str):
         return f"""
         Ok, we're blasting off at the speed of light!

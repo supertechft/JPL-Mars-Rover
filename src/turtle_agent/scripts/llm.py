@@ -16,39 +16,21 @@ import os
 
 import dotenv
 from azure.identity import ClientSecretCredential, get_bearer_token_provider
-from langchain_openai import AzureChatOpenAI
+from langchain_openai import ChatOpenAI
+from huggingface_hub import InferenceClient
 
 
 def get_llm(streaming: bool = False):
     """A helper function to get the LLM instance."""
     dotenv.load_dotenv(dotenv.find_dotenv())
 
-    APIM_SUBSCRIPTION_KEY = get_env_variable("APIM_SUBSCRIPTION_KEY")
-    default_headers = {}
-    if APIM_SUBSCRIPTION_KEY is not None:
-        # only set this if the APIM API requires a subscription...
-        default_headers["Ocp-Apim-Subscription-Key"] = APIM_SUBSCRIPTION_KEY
-
-    # Set up authority and credentials for Azure authentication
-    credential = ClientSecretCredential(
-        tenant_id=get_env_variable("AZURE_TENANT_ID"),
-        client_id=get_env_variable("AZURE_CLIENT_ID"),
-        client_secret=get_env_variable("AZURE_CLIENT_SECRET"),
-        authority="https://login.microsoftonline.com",
-    )
-
-    token_provider = get_bearer_token_provider(
-        credential, "https://cognitiveservices.azure.com/.default"
-    )
-
-    llm = AzureChatOpenAI(
-        azure_deployment=get_env_variable("DEPLOYMENT_ID"),
-        azure_ad_token_provider=token_provider,
-        openai_api_type="azure_ad",
-        api_version=get_env_variable("API_VERSION"),
-        azure_endpoint=get_env_variable("API_ENDPOINT"),
-        default_headers=default_headers,
-        streaming=streaming,
+    llm = ChatOpenAI(
+    model_name="gpt-4o",  # or your preferred model
+    temperature=0,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    openai_api_key=os.getenv("OPENAI_API_KEY"),  # Using environment variable
     )
 
     return llm
@@ -76,3 +58,12 @@ def get_env_variable(var_name: str) -> str:
     if value is None:
         raise ValueError(f"Environment variable {var_name} is not set.")
     return value
+
+
+def get_inference():
+    """A helper function to get the InferenceClient instance."""
+    dotenv.load_dotenv(dotenv.find_dotenv())
+    
+    api_key = os.getenv("HF_API_KEY")
+    client = InferenceClient(token=api_key)
+    return client
