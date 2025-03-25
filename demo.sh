@@ -23,7 +23,9 @@ fi
 
 # Set default headless mode
 HEADLESS=${HEADLESS:-false}
-DEVELOPMENT=${DEVELOPMENT:-false}
+DEVELOPMENT=${DEVELOPMENT:-true}
+# true to be able to see changes in the src/rosa folder
+# false for regular jpl-rosa package
 
 # Enable X11 forwarding based on OS
 case "$(uname)" in
@@ -35,7 +37,8 @@ case "$(uname)" in
         if grep -q "WSL" /proc/version; then
             export DISPLAY=:0
         else
-            export DISPLAY=host.docker.internal:0
+            export DISPLAY=:0
+            # try DISPLAY=host.docker.internal:0 if DISPLAY=:0 doesn't work
         fi
         xhost +
         ;;

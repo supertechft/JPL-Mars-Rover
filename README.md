@@ -101,20 +101,23 @@ root@docker-desktop:/app# start streaming:=True
 ```
 
 
-#### Windows (WSL2)
-The following sections describe instructions for a Windows 10 machine using WSL2 Ubuntu 22.04 and VSCode.
+#### Linux or Linux Virtual machine
+The following sections describe instructions for a Windows 10 machine using Ubuntu 16.04 Virtual Machine.
 
-* Follow [this guide](https://learn.microsoft.com/en-us/windows/wsl/install) to install WSL2 Ubuntu on your machine
-* Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+* Set up one of the [Ubuntu releases](https://learn.microsoft.com/en-us/windows/wsl/install) (or your preferred Linux distro)
+* Install [Docker](https://www.docker.com/) using the following command:
+```bash
+sudo apt-get install docker.io
+```
+* Verify installation: `docker --version` in terminal
 
 * Install jpl-rosa python package:
 ```bash
 pip3 install jpl-rosa
 ```
-* Launch Docker Desktop
 * Clone this repository and cd into its top-level directory
-* Configure VSCode to handle Linux line endings 
-  * at the bottom bar, change the end of line sequence is LF for this directory
+* If you're using VSCode, configure it to handle Linux line endings
+  * at the bottom bar, change the end of line sequence to LF for this directory
   * in settings, change "Files: Eol" to use "\n" line endings
 * Make sure [Git is configured](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings?platform=linux) handle Linux line endings
 ```bash
@@ -122,11 +125,15 @@ git config --global core.autocrlf input
 git rm -rf --cached .
 git reset --hard HEAD
 ```
+* If you're running into errors with `\r\n` or `\r`, consider using dos2unix on the file(s)
 * Edit the ".env" file with at least your OPENAI_API_KEY and/or HF_API_KEY
 * Edit the file "src/turtle_agent/scripts/llm.py" with these changes:
   * Add the following import statement at the top:  "from langchain_openai import ChatOpenAI"
   * Create an instance of ChatOpenAI() and make sure its return at the top of the function "def get_llm()"
-* Launch the demo.sh script in WSL and wait several seconds for the Turtle_Sim window to appear
+* Give execute permissions to `demo.sh` and `turtle_agent.py`
+  * Open the terminal in repsective folder, type `chmod +x file` where file is demo.sh or turtle_agent.py
+  * or if you prefer GUI, right-click the file -> properties, check `Allow executing file as program`
+* Launch the demo.sh script in terminal and wait several seconds for the Turtle_Sim window to appear
 ```bash
 ./demo.sh
 ```
@@ -135,7 +142,9 @@ git reset --hard HEAD
 root@docker-desktop:/app# start streaming:=True
 ```
 * Wait a few seconds and the simulation interactive console will appear and you can then type 'help' or 'examples' to get more information about commands you can run.
-
+* If the previous build was successful, then on subsequent runs you may comment out the line with
+  
+  `docker build` around line 60 in `demo.sh`
 
 ### Usage Examples
 

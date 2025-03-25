@@ -12,7 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from .audio import recording
 from .prompts import RobotSystemPrompts
 from .rosa import ROSA, ChatModel
 
-__all__ = ["ROSA", "RobotSystemPrompts", "ChatModel"]
+__all__ = ["ROSA", "RobotSystemPrompts", "ChatModel", "recording"]

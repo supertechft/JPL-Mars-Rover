@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from pathlib import Path
 from typing import Any, AsyncIterable, Dict, Literal, Optional, Union
 
 from langchain.agents import AgentExecutor
@@ -26,6 +27,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 
+from .audio import recording
 from .prompts import RobotSystemPrompts, system_prompts
 from .tools import ROSATools
 
@@ -67,6 +69,8 @@ class ROSA:
         self,
         ros_version: Literal[1, 2],
         llm: ChatModel,
+        inference=None,
+        audio_path=str(Path(__file__).parent / "data" / "audio.wav"),
         tools: Optional[list] = None,
         tool_packages: Optional[list] = None,
         prompts: Optional[RobotSystemPrompts] = None,
@@ -79,6 +83,8 @@ class ROSA:
         self.__chat_history = []
         self.__ros_version = ros_version
         self.__llm = llm.with_config({"streaming": streaming})
+        self.__inference = inference
+        self.__audio_path = audio_path
         self.__memory_key = "chat_history"
         self.__scratchpad = "agent_scratchpad"
         self.__blacklist = blacklist if blacklist else []
@@ -97,6 +103,24 @@ class ROSA:
     def chat_history(self):
         """Get the chat history."""
         return self.__chat_history
+
+    def listen(self) -> str:
+        """Record an audio file and transcribe it."""
+        if not self.__inference:
+            return "Do nothing"
+
+        # Record Audio
+        print("Recording")
+        recording(self.__audio_path)
+        print("Finished, now transcribing")
+        
+        # Transcribe Audio using OpenAI Whisper
+        transcription = self.__inference.automatic_speech_recognition(
+            audio=self.__audio_path, model="openai/whisper-large-v3-turbo"
+        ).text
+        print(transcription)
+
+        return transcription
 
     def clear_chat(self):
         """Clear the chat history."""
