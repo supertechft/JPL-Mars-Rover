@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
     python3 -m pip install -U python-dotenv catkin_tools && \
+    sudo rosdep fix-permissions && \
     rosdep update && \
     echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc && \
     echo "alias start='catkin build && source devel/setup.bash && roslaunch turtle_agent agent.launch'" >> /root/.bashrc && \
