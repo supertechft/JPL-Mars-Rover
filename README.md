@@ -111,10 +111,6 @@ sudo apt-get install docker.io
 ```
 * Verify installation: `docker --version` in terminal
 
-* Install jpl-rosa python package:
-```bash
-pip3 install jpl-rosa
-```
 * Clone this repository and cd into its top-level directory
 * If you're using VSCode, configure it to handle Linux line endings
   * at the bottom bar, change the end of line sequence to LF for this directory

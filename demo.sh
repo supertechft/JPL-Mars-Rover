@@ -63,10 +63,10 @@ CONTAINER_NAME="rosa-turtlesim-demo"
 
 # comment out these two lines below if you just want to run
 echo "Building the $CONTAINER_NAME Docker image..."
-docker build --build-arg DEVELOPMENT=$DEVELOPMENT -t $CONTAINER_NAME -f Dockerfile . || { echo "Error: Docker build failed"; exit 1; }
+sudo docker build --build-arg DEVELOPMENT=$DEVELOPMENT -t $CONTAINER_NAME -f Dockerfile . || { echo "Error: Docker build failed"; exit 1; }
 
 echo "Running the Docker container..."
-docker run -it --rm --device /dev/snd --name $CONTAINER_NAME \
+sudo docker run -it --rm --device /dev/snd --name $CONTAINER_NAME \
     -e DISPLAY=$DISPLAY \
     -e HEADLESS=$HEADLESS \
     -e DEVELOPMENT=$DEVELOPMENT \

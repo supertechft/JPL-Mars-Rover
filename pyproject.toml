@@ -30,13 +30,16 @@ dependencies = [
     "langchain-core==0.3.9",
     "langchain-openai==0.2.2",
     "langchain-ollama==0.2.0",
-    "pydantic",
+    "pydantic==2.10.6",
     "pyinputplus",
     "azure-identity",
     "cffi",
     "rich",
     "pillow>=10.4.0",
     "numpy>=1.26.4",
+    "huggingface_hub",
+    "pyaudio",
+    "sounddevice",
 ]
 
 [project.urls]
