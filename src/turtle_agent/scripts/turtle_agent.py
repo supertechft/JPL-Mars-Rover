@@ -16,24 +16,25 @@
 import asyncio
 import os
 from datetime import datetime
+from pathlib import Path
 
 import dotenv
 import pyinputplus as pyip
 import rospy
-from langchain.agents import tool, Tool
+import tools.turtle as turtle_tools
+from help import get_help
+from langchain.agents import Tool, tool
+from llm import get_inference, get_llm
+from prompts import get_prompts
+
 # from langchain_ollama import ChatOllama
-from rich.console import Console
-from rich.console import Group
+from rich.console import Console, Group
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
-from rosa import ROSA
 
-import tools.turtle as turtle_tools
-from help import get_help
-from llm import get_llm
-from prompts import get_prompts
+from rosa import ROSA
 
 
 # Typical method for defining tools in ROSA
@@ -44,11 +45,12 @@ def cool_turtle_tool():
 
 
 class TurtleAgent(ROSA):
-
     def __init__(self, streaming: bool = False, verbose: bool = True):
         self.__blacklist = ["master", "docker"]
         self.__prompts = get_prompts()
         self.__llm = get_llm(streaming=streaming)
+        self.__inference = get_inference()
+        self.__audio_path = str(Path(__file__).parent / 'data' / 'audio.wav')
 
         # self.__llm = ChatOllama(
         #     base_url="host.docker.internal:11434",
@@ -69,6 +71,8 @@ class TurtleAgent(ROSA):
         super().__init__(
             ros_version=1,
             llm=self.__llm,
+            inference=self.__inference,
+            audio_path=self.__audio_path,
             tools=[cool_turtle_tool, blast_off],
             tool_packages=[turtle_tools],
             blacklist=self.__blacklist,
@@ -91,6 +95,7 @@ class TurtleAgent(ROSA):
             "help": lambda: self.submit(get_help(self.examples)),
             "examples": lambda: self.submit(self.choose_example()),
             "clear": lambda: self.clear(),
+            "audio": lambda: self.submit(self.listen()),
         }
 
     def blast_off(self, input: str):

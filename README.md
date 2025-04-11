@@ -1,4 +1,4 @@
-> ⚠️ **Notice:** This branch is to stay in sync with the [main branch of the ROSA repository](https://github.com/nasa-jpl/rosa), and includes [**expanded, platform-specific instructions**](#demo-setup-instructions) for setting up the TurtleSim demo on **macOS, Windows, and Ubuntu**. ⚠️
+> This branch is for implementing a general ASR for all robot agents
 
 <!-- Header block for project --> <hr>
 <div align="center">
