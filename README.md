@@ -1,3 +1,5 @@
+> This branch is for implementing a general ASR for all robot agents
+
 <!-- Header block for project --> <hr>
 <div align="center">
 <!--   <img width="292" alt="ROSA_logo_dark_bg@2x" src="https://github.com/user-attachments/assets/7b4a8e64-9a08-4180-806a-5076d3672c05"> -->
@@ -14,7 +16,7 @@
 <br>
 <div align="center">
 
-[![arXiv](https://img.shields.io/badge/arXiv-2410.06472v1-b31b1b.svg)](https://arxiv.org/abs/2410.06472v1)
+[![arXiv](https://img.shields.io/badge/arXiv-2410.06472-b31b1b.svg)](https://arxiv.org/abs/2410.06472)
 ![ROS 1](https://img.shields.io/badge/ROS_1-Noetic-blue)
 ![ROS 2](https://img.shields.io/badge/ROS_2-Humble|Iron|Jazzy-blue)
 ![License](https://img.shields.io/pypi/l/jpl-rosa)
@@ -50,98 +52,6 @@ ROSA is your AI-powered assistant for ROS1 and ROS2 systems. Built on the [Langc
 pip3 install jpl-rosa
 ```
 
-#### MacOS 
-
-The following sections describe specific instructions for specific Mac hardware and operating system.
-
-#### Sonoma 14.6.1, M2 Max (Anaconda Python)
-
-The following instructions are based off a few things found on the internet, included [this helpful gist.](https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088)
-
-* Create a conda environment for python 3.9 and activate it
-* Install jpl-rosa python package:
-```bash
-python -m pip install jpl-rosa
-```
-* Install MacOS homebrew if not already installed (https://brew.sh/)
-* Update your brew packages:
-```bash
-brew update
-```
-* Install Xquartz (for X11 graphical render support)
-```bash
-brew install --cask xquartz
-```
-* Launch XQuarts:
-```bash
-open -a XQuartz
-```
-* You should see QXuartz in the top menu bar, choose settings, and make sure both options are checked in the X11 Preferences Security tab.
-* Reboot your machine
-* Allow X11 connections from anywhere:
-```bash
-xhost +
-```
-* Clone this repository and cd into its top-level directory
-* Edit the ".env" file with at least your OPENAI_API_KEY
-* Edit the "demo.sh" script and change the line "export DISPLAY=host.docker.internal:0" to "export=[IP_ADDRESS]:0" where IP_ADDRESS is your machine's IP address on the local internet.
-* Edit the file "src/turtle_agent/scripts/llm.py" with these changes:
-  * Add the following import statement at the top:  "from langchain_openai import ChatOpenAI"
-  * Create an instance of ChatOpenAI() and make sure its return at the top of the function "def get_llm()"
-* Launch the demo.sh script and wait several seconds for the Turtle_Sim window to appear
-* When the docker container appears, start the simulation:
-```bash
-root@docker-desktop:/app# start streaming:=True
-```
-* Wait a few seconds and the simulation interactive console will appear and you can then type 'help' or 'examples' to get more information about commands you can run.
-* The following commands worked for me:
-```
-> create a new turtle named 'george' at [3,3]
-> move forward
-```
-
-
-#### Linux or Linux Virtual machine
-The following sections describe instructions for a Windows 10 machine using Ubuntu 16.04 Virtual Machine.
-
-* Set up one of the [Ubuntu releases](https://learn.microsoft.com/en-us/windows/wsl/install) (or your preferred Linux distro)
-* Install [Docker](https://www.docker.com/) using the following command:
-```bash
-sudo apt-get install docker.io
-```
-* Verify installation: `docker --version` in terminal
-
-* Clone this repository and cd into its top-level directory
-* If you're using VSCode, configure it to handle Linux line endings
-  * at the bottom bar, change the end of line sequence to LF for this directory
-  * in settings, change "Files: Eol" to use "\n" line endings
-* Make sure [Git is configured](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings?platform=linux) handle Linux line endings
-```bash
-git config --global core.autocrlf input
-git rm -rf --cached .
-git reset --hard HEAD
-```
-* If you're running into errors with `\r\n` or `\r`, consider using dos2unix on the file(s)
-* Edit the ".env" file with at least your OPENAI_API_KEY and/or HF_API_KEY
-* Edit the file "src/turtle_agent/scripts/llm.py" with these changes:
-  * Add the following import statement at the top:  "from langchain_openai import ChatOpenAI"
-  * Create an instance of ChatOpenAI() and make sure its return at the top of the function "def get_llm()"
-* Give execute permissions to `demo.sh` and `turtle_agent.py`
-  * Open the terminal in repsective folder, type `chmod +x file` where file is demo.sh or turtle_agent.py
-  * or if you prefer GUI, right-click the file -> properties, check `Allow executing file as program`
-* Launch the demo.sh script in terminal and wait several seconds for the Turtle_Sim window to appear
-```bash
-./demo.sh
-```
-* When the docker container appears, start the simulation:
-```bash
-root@docker-desktop:/app# start streaming:=True
-```
-* Wait a few seconds and the simulation interactive console will appear and you can then type 'help' or 'examples' to get more information about commands you can run.
-* If the previous build was successful, then on subsequent runs you may comment out the line with
-  
-  `docker build` around line 60 in `demo.sh`
-
 ### Usage Examples
 
 ```python
@@ -171,8 +81,181 @@ executing the necessary commands to do so.
 
 https://github.com/user-attachments/assets/77b97014-6d2e-4123-8d0b-ea0916d93a4e
 
-For detailed instructions on setting up and running the TurtleSim demo, please refer to our [TurtleSim Demo Guide](https://github.com/nasa-jpl/rosa/wiki/Guide:-TurtleSim-Demo) in the Wiki.
+### Demo Setup Instructions
 
+For detailed instructions on setting up and running the TurtleSim demo, please refer to the instructions specific to your system:
+
+<details>
+  <summary>MacOS</summary>
+
+The following sections describe instructions for Sonoma 14.6.1, M2 Max (Anaconda Python). They are based off a few things found on the internet, included [this helpful gist](https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088).
+
+1. **Set up Python environment**:
+   - Create a conda environment for Python 3.9 and activate it.
+   - Install the `jpl-rosa` Python package:
+     ```bash
+     python -m pip install jpl-rosa
+     ```
+
+2. **Install Homebrew and update packages**:
+   - Install MacOS Homebrew if not already installed ([Homebrew](https://brew.sh/)).
+   - Update your brew packages:
+     ```bash
+     brew update
+     ```
+
+3. **Install XQuartz for graphical support**:
+   - Install XQuartz:
+     ```bash
+     brew install --cask xquartz
+     ```
+   - Launch XQuartz:
+     ```bash
+     open -a XQuartz
+     ```
+   - In the XQuartz menu, go to **Settings** > **Preferences** > **Security** tab and ensure both options are checked.
+   - Reboot your machine.
+
+4. **Configure X11 connections**:
+   - Allow X11 connections from anywhere:
+     ```bash
+     xhost +
+     ```
+
+5. **Prepare the repository**:
+   - Clone this repository and navigate to its top-level directory.
+    ```bash
+    git clone https://github.com/nasa-jpl/rosa.git
+    cd rosa
+    ```
+   - Edit the `demo.sh` script and change the line
+     `export DISPLAY=host.docker.internal:0`
+     to
+     `export=[IP_ADDRESS]:0`
+     where `IP_ADDRESS` is your machine's local IP address.
+
+6. **Configure the LLM**:
+   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
+   - Edit the file `src/turtle_agent/scripts/llm.py` with these changes:
+     - Add the following import statement at the top:  `from langchain_openai import ChatOpenAI`.
+     - Create an instance of `ChatOpenAI()` and make sure its return at the top of the function `def get_llm()`.
+   - For more detailed instructions or if you rather use a different model, refer to the [Model Configuration](https://github.com/nasa-jpl/rosa/wiki/Model-Configuration) guide.
+
+7. **Run the demo**:
+   - Launch the `demo.sh` script and wait for the TurtleSim window to appear.
+   - Start the simulation and type `help` or `examples` to get more information about commands you can run:
+     ```bash
+     root@docker-desktop:/app# start
+     ```
+
+</details>
+
+<details>
+  <summary>Windows (WSL2)</summary>
+
+The following sections describe instructions for a Windows 10 machine using WSL2 Ubuntu 22.04 and VSCode.
+
+1. **Set up WSL2 and Docker**:
+   - Follow [this guide](https://learn.microsoft.com/en-us/windows/wsl/install) to install WSL2 Ubuntu on your machine.
+   - Install [Chocolatey](https://chocolatey.org/install) package manager.
+   - Install [Docker Desktop](https://www.docker.com/products/docker-desktop).
+
+2. **Install required tools**:
+   - Install the `jpl-rosa` Python package:
+     ```bash
+     pip3 install jpl-rosa
+     ```
+   - Install VcXsrv via Chocolatey (for X11 graphical render support):
+     ```powershell
+     choco install vcxsrv
+     ```
+   - Launch VcXsrv (XLaunch) and uncheck "Native OpenGL" while checking "Disable access control."
+
+3. **Prepare the repository**:
+   - Clone this repository and navigate to its top-level directory.
+     ```bash
+     git clone https://github.com/nasa-jpl/rosa.git
+     cd rosa
+     ```
+   - Configure VSCode to handle Linux line endings:
+     - At the bottom bar, change the end-of-line sequence to LF for this directory.
+     - In settings, change "Files: EOL" to use `\n` line endings.
+   - Ensure [Git is configured](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings?platform=linux) to handle Linux line endings:
+     ```bash
+     git config --global core.autocrlf input
+     git rm -rf --cached .
+     git reset --hard HEAD
+     ```
+
+4. **Configure the LLM**:
+   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
+   - Edit the file `src/turtle_agent/scripts/llm.py` with these changes:
+     - Add the following import statement at the top:  `from langchain_openai import ChatOpenAI`.
+     - Create an instance of `ChatOpenAI()` and make sure its return at the top of the function `def get_llm()`.
+   - For more detailed instructions or if you rather use a different model, refer to the [Model Configuration](https://github.com/nasa-jpl/rosa/wiki/Model-Configuration) guide.
+   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
+
+4. **Run the demo**:
+   - Launch the `demo.sh` script in WSL and wait for the TurtleSim window to appear:
+     ```bash
+     ./demo.sh
+     ```
+   - Start the simulation and type `help` or `examples` to get more information about commands you can run:
+     ```bash
+     root@docker-desktop:/app# start
+     ```
+
+</details>
+
+<details>
+  <summary>Linux</summary>
+
+The following sections describe instructions for a Linux machine running Ubuntu 22.04.
+
+1. **Set up Docker**:
+   - Install [Docker](https://www.docker.com/) and add your user to the Docker group to run Docker commands without root privileges:
+     ```bash
+     sudo apt-get install docker.io
+     sudo usermod -aG docker $USER
+     newgrp docker
+     ```
+   - Verify the installation:
+     ```bash
+     docker --version
+     ```
+
+2. **Prepare the repository**:
+   - Clone this repository and navigate to its top-level directory:
+     ```bash
+     git clone https://github.com/nasa-jpl/rosa.git
+     cd rosa
+     ```
+   - Edit the `demo.sh` script and change the line
+     `export DISPLAY=host.docker.internal:0`
+     to
+     `export DISPLAY=${DISPLAY:-:0}`
+     On native Linux, skip this step.
+
+3. **Configure the LLM**:
+   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
+   - Edit the file `src/turtle_agent/scripts/llm.py` with these changes:
+     - Add the following import statement at the top:  `from langchain_openai import ChatOpenAI`.
+     - Create an instance of `ChatOpenAI()` and make sure its return at the top of the function `def get_llm()`.
+   - For more detailed instructions or if you rather use a different model, refer to the [Model Configuration](https://github.com/nasa-jpl/rosa/wiki/Model-Configuration) guide.
+   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
+
+3. **Run the demo**:
+   - Launch the `demo.sh` script and wait for the TurtleSim window to appear:
+     ```bash
+     ./demo.sh
+     ```
+   - Start the simulation and type `help` or `examples` to get more information about commands you can run:
+     ```bash
+     root@docker-desktop:/app# start
+     ```
+   - If the previous build was successful, then on subsequent runs you may comment out the line with `docker build` around line 60 in `demo.sh`.
+
+</details>
 
 ## IsaacSim Extension (Coming Soon)
 
@@ -184,7 +267,7 @@ in the form of an IsaacSim extension. This will allow you not only to control yo
 
 ## 📘 Learn More
 
-- [📕 Read the paper](https://arxiv.org/abs/2410.06472v1)
+- [📕 Read the paper](https://arxiv.org/abs/2410.06472)
 - [🗺️ Roadmap](https://github.com/nasa-jpl/rosa/wiki/Feature-Roadmap)
 - [🏷️ Releases](https://github.com/nasa-jpl/rosa/releases)
 - [❓ FAQ](https://github.com/nasa-jpl/rosa/wiki/FAQ)

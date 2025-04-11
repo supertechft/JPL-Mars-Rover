@@ -23,22 +23,17 @@ fi
 
 # Set default headless mode
 HEADLESS=${HEADLESS:-false}
-DEVELOPMENT=${DEVELOPMENT:-true}
-# true to be able to see changes in the src/rosa folder
-# false for regular jpl-rosa package
+DEVELOPMENT=${DEVELOPMENT:-false}
 
 # Enable X11 forwarding based on OS
 case "$(uname)" in
     Linux*|Darwin*)
         echo "Enabling X11 forwarding..."
-
-        # Credits user Giuseppe Coco for this change
         # If running under WSL, use :0 for DISPLAY
         if grep -q "WSL" /proc/version; then
             export DISPLAY=:0
         else
-            export DISPLAY=:0
-            # try DISPLAY=host.docker.internal:0 if DISPLAY=:0 doesn't work
+            export DISPLAY=host.docker.internal:0
         fi
         xhost +
         ;;
@@ -60,13 +55,11 @@ fi
 
 # Build and run the Docker container
 CONTAINER_NAME="rosa-turtlesim-demo"
-
-# comment out these two lines below if you just want to run
 echo "Building the $CONTAINER_NAME Docker image..."
-sudo docker build --build-arg DEVELOPMENT=$DEVELOPMENT -t $CONTAINER_NAME -f Dockerfile . || { echo "Error: Docker build failed"; exit 1; }
+docker build --build-arg DEVELOPMENT=$DEVELOPMENT -t $CONTAINER_NAME -f Dockerfile . || { echo "Error: Docker build failed"; exit 1; }
 
 echo "Running the Docker container..."
-sudo docker run -it --rm --device /dev/snd --name $CONTAINER_NAME \
+docker run -it --rm --name $CONTAINER_NAME \
     -e DISPLAY=$DISPLAY \
     -e HEADLESS=$HEADLESS \
     -e DEVELOPMENT=$DEVELOPMENT \
