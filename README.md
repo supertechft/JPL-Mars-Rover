@@ -193,7 +193,6 @@ The following sections describe instructions for a Windows 10 machine using WSL2
      - Add the following import statement at the top:  `from langchain_openai import ChatOpenAI`.
      - Create an instance of `ChatOpenAI()` and make sure its return at the top of the function `def get_llm()`.
    - For more detailed instructions or if you rather use a different model, refer to the [Model Configuration](https://github.com/nasa-jpl/rosa/wiki/Model-Configuration) guide.
-   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
 
 4. **Run the demo**:
    - Launch the `demo.sh` script in WSL and wait for the TurtleSim window to appear:
@@ -242,7 +241,6 @@ The following sections describe instructions for a Linux machine running Ubuntu 
      - Add the following import statement at the top:  `from langchain_openai import ChatOpenAI`.
      - Create an instance of `ChatOpenAI()` and make sure its return at the top of the function `def get_llm()`.
    - For more detailed instructions or if you rather use a different model, refer to the [Model Configuration](https://github.com/nasa-jpl/rosa/wiki/Model-Configuration) guide.
-   - Edit the `.env` file with at least your `OPENAI_API_KEY`.
 
 3. **Run the demo**:
    - Launch the `demo.sh` script and wait for the TurtleSim window to appear:
