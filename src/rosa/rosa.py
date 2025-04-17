@@ -27,7 +27,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 
-from .audio import recording
+from .audio_recorder import Record
 from .prompts import RobotSystemPrompts, system_prompts
 from .tools import ROSATools
 
@@ -111,7 +111,7 @@ class ROSA:
 
         # Record Audio
         print("Recording")
-        recording(self.__audio_path)
+        Record(self.__audio_path)
         print("Finished, now transcribing")
         
         # Transcribe Audio using OpenAI Whisper

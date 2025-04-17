@@ -21,20 +21,20 @@ from pathlib import Path
 import dotenv
 import pyinputplus as pyip
 import rospy
-import tools.turtle as turtle_tools
-from help import get_help
-from langchain.agents import Tool, tool
-from llm import get_inference, get_llm
-from prompts import get_prompts
-
+from langchain.agents import tool, Tool
 # from langchain_ollama import ChatOllama
-from rich.console import Console, Group
+from rich.console import Console
+from rich.console import Group
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
-
 from rosa import ROSA
+
+import tools.turtle as turtle_tools
+from help import get_help
+from llm import get_inference, get_llm
+from prompts import get_prompts
 
 
 # Typical method for defining tools in ROSA
@@ -45,6 +45,7 @@ def cool_turtle_tool():
 
 
 class TurtleAgent(ROSA):
+
     def __init__(self, streaming: bool = False, verbose: bool = True):
         self.__blacklist = ["master", "docker"]
         self.__prompts = get_prompts()

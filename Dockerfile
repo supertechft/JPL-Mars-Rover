@@ -13,14 +13,13 @@ RUN apt-get update && apt-get install -y \
     python3.9-dev \
     python3-pip \
     alsa-base \
-    libasound2-dev \
     alsa-utils \
-    portaudio19-dev 
+    libasound2-dev \
+    portaudio19-dev
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    python3 -m pip install -U python-dotenv catkin_tools && \
-    sudo rosdep fix-permissions && \
-    rosdep update && \
+# RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN python3 -m pip install -U python-dotenv catkin_tools
+RUN rosdep update && \
     echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc && \
     echo "alias start='catkin build && source devel/setup.bash && roslaunch turtle_agent agent.launch'" >> /root/.bashrc && \
     echo "export ROSLAUNCH_SSH_UNKNOWN=1" >> /root/.bashrc
@@ -31,14 +30,8 @@ WORKDIR /app/
 # Modify the RUN command to use ARG
 RUN /bin/bash -c 'if [ "$DEVELOPMENT" = "true" ]; then \
     python3.9 -m pip install --user -e .; \
-    python3.9 -m pip install -U huggingface_hub; \
-    python3.9 -m pip install -U pyaudio; \
-    python3.9 -m pip install -U sounddevice; \
     else \
     python3.9 -m pip install -U jpl-rosa>=1.0.7; \
-    python3.9 -m pip install -U huggingface_hub; \
-    python3.9 -m pip install -U pyaudio; \
-    python3.9 -m pip install -U sounddevice; \
     fi'
 
 CMD ["/bin/bash", "-c", "source /opt/ros/noetic/setup.bash && \

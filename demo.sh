@@ -23,7 +23,7 @@ fi
 
 # Set default headless mode
 HEADLESS=${HEADLESS:-false}
-DEVELOPMENT=${DEVELOPMENT:-false}
+DEVELOPMENT=${DEVELOPMENT:-true}
 
 # Enable X11 forwarding based on OS
 case "$(uname)" in
@@ -33,7 +33,7 @@ case "$(uname)" in
         if grep -q "WSL" /proc/version; then
             export DISPLAY=:0
         else
-            export DISPLAY=host.docker.internal:0
+            export DISPLAY=${DISPLAY:-:0}
         fi
         xhost +
         ;;
@@ -66,6 +66,7 @@ docker run -it --rm --name $CONTAINER_NAME \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v "$PWD/src":/app/src \
     -v "$PWD/tests":/app/tests \
+    --device /dev/snd:/dev/snd \
     --network host \
     $CONTAINER_NAME
 

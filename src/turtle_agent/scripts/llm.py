@@ -15,7 +15,6 @@
 import os
 
 import dotenv
-from azure.identity import ClientSecretCredential, get_bearer_token_provider
 from langchain_openai import ChatOpenAI
 from huggingface_hub import InferenceClient
 
@@ -25,15 +24,24 @@ def get_llm(streaming: bool = False):
     dotenv.load_dotenv(dotenv.find_dotenv())
 
     llm = ChatOpenAI(
-    model_name="gpt-4o",  # or your preferred model
-    temperature=0,
-    max_tokens=None,
-    timeout=None,
-    max_retries=2,
-    openai_api_key=os.getenv("OPENAI_API_KEY"),  # Using environment variable
+        model_name="gpt-4o",  # or your preferred model
+        temperature=0,
+        max_tokens=None,
+        timeout=None,
+        max_retries=2,
+        openai_api_key=os.getenv("OPENAI_API_KEY"),  # Using environment variable
     )
 
     return llm
+
+
+def get_inference():
+    """A helper function to get the InferenceClient instance."""
+    dotenv.load_dotenv(dotenv.find_dotenv())
+    
+    api_key = os.getenv("HF_API_KEY")   # Using environment variable
+    client = InferenceClient(token=api_key)
+    return client
 
 
 def get_env_variable(var_name: str) -> str:
@@ -58,12 +66,3 @@ def get_env_variable(var_name: str) -> str:
     if value is None:
         raise ValueError(f"Environment variable {var_name} is not set.")
     return value
-
-
-def get_inference():
-    """A helper function to get the InferenceClient instance."""
-    dotenv.load_dotenv(dotenv.find_dotenv())
-    
-    api_key = os.getenv("HF_API_KEY")
-    client = InferenceClient(token=api_key)
-    return client

@@ -6,3 +6,4 @@ dist/
 __pycache__/
 docs
 .DS_Store
+**/data/audio.wav
